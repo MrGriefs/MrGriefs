@@ -1,0 +1,46 @@
+name: Metrics
+on:
+  schedule:
+    - cron: 0 16 * * *
+  workflow_dispatch:
+jobs:
+  github-metrics:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Metrics
+        if: ${{ success() || failure() }}
+        uses: lowlighter/metrics@v3.19
+        with:
+          filename: assets/metrics.svg
+          token: ${{ secrets.GH_TOKEN }}
+          user: MrGriefs
+          template: classic
+          base: header, activity, community, repositories
+          committer_message: "chore: update metrics"
+      - name: WakaTime
+        if: ${{ success() || failure() }}
+        uses: lowlighter/metrics@v3.19
+        with:
+          filename: assets/wakatime.svg
+          token: ${{ secrets.GH_TOKEN }}
+          user: MrGriefs
+          template: classic
+          base: ""
+          committer_message: "chore: update wakatime"
+          plugin_wakatime: yes
+          plugin_wakatime_token: ${{ secrets.WAKATIME_TOKEN }}
+          plugin_wakatime_days: 7
+          plugin_wakatime_limit: 5
+          plugin_wakatime_sections: time, projects, projects-graphs, languages, languages-graphs, editors, editors-graphs, os, os-graphs
+          plugin_wakatime_url: https://wakatime.com
+          plugin_wakatime_user: MrGriefs
+      - name: Achievements
+        if: ${{ success() || failure() }}
+        uses: lowlighter/metrics@v3.19
+        with:
+          filename: assets/achievements.svg
+          token: ${{ secrets.GH_TOKEN }}
+          base: ""
+          committer_message: "chore: update achievements"
+          plugin_achievements: yes
+          plugin_achievements_display: compact
